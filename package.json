@@ -1,0 +1,18 @@
+{
+  "name": "100.crawler",
+  "version": "1.0.0",
+  "description": "整站爬虫",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node ./src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@extractus/article-extractor": "^7.2.12",
+    "express": "^4.18.1",
+    "crawler": "^1.4.0"
+  }
+}
