@@ -23,7 +23,7 @@ function run({ mainHost, startHost, recordLowHost = false }) {
     callback: function (error, res, done) {
       if (error || res.statusCode > 400) {
         // ! 出错直接下一个
-        log("错误：：：当前等待队列中拥有:", waitHrefsQueue.size)
+        log(folderName, "\t错误：：：当前等待队列中拥有:", waitHrefsQueue.size)
         const [nextHrefs] = waitHrefsQueue // 取出集合里下一个需要爬的href
         waitHrefsQueue.delete(nextHrefs) // 删除
         crawler.queue(nextHrefs)
@@ -59,7 +59,7 @@ function run({ mainHost, startHost, recordLowHost = false }) {
             }
           })
         }
-        log("当前等待队列中拥有:", waitHrefsQueue.size)
+        log(folderName, "\t当前等待队列中拥有:", waitHrefsQueue.size, "\t---\t已完成队列拥有:", crawledHrefsQueue.size)
         const [nextHrefs] = waitHrefsQueue // 取出集合里下一个需要爬的href
         waitHrefsQueue.delete(nextHrefs) // 删除
         crawler.queue(nextHrefs)
@@ -81,7 +81,13 @@ function run({ mainHost, startHost, recordLowHost = false }) {
 // ! 菏泽学院  https://www.hezeu.edu.cn/        26万收录
 // ! 泰安一中  https://www.tadyz.com/          3万收录
 run({
-  mainHost: 'fspt.edu.cn',
-  startHost: 'https://www.fspt.edu.cn/',
+  mainHost: 'www.tadyz.com',
+  startHost: 'https://www.tadyz.com/ ',
+  recordLowHost: true
+})
+
+run({
+  mainHost: 'www.tsinghua.edu.cn',
+  startHost: 'https://www.tsinghua.edu.cn/',
   recordLowHost: true
 })
