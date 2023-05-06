@@ -45,11 +45,10 @@ export function handleHref(href, currentHref, mainHost) {
   if (href.endsWith('.zip') || href.endsWith('.pdf') || href.endsWith('.doc') || href.endsWith('.png') || href.endsWith('.jpg')) return ''
 
   // ! 锚点不要
-  if (href.indexOf('#') !== -1) {
-    href = href.split('#')[0]
-  }
-  // ! 邮箱跳转不要
-  if (href.indexOf('mailto:') !== -1) return ''
+  if (href.indexOf('#') !== -1) return ''
+
+  // ! 邮箱、电话、短信、位置不要
+  if (href.indexOf('mailto:') !== -1 || href.indexOf('tel:') !== -1 || href.indexOf('sms:') !== -1 || href.indexOf('geopoint:') !== -1) return ''
 
   if (!href.startsWith('http')) {
     href = absolutify(currentHref, href)
