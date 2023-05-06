@@ -81,9 +81,7 @@ function run({ mainHost, startHost, recordLowHost = false }) {
 // ! 菏泽学院  https://www.hezeu.edu.cn/        26万收录
 // ! 泰安一中  https://www.tadyz.com/          3万收录
 run({
-  // mainHost: 'wyu.edu.cn',
-  // startHost: 'https://www.wyu.edu.cn/',
-  mainHost: 'hezeu.edu.cn',
-  startHost: 'https://www.hezeu.edu.cn/',
+  mainHost: 'fspt.edu.cn',
+  startHost: 'https://www.fspt.edu.cn/',
   recordLowHost: true
 })
