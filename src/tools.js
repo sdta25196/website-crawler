@@ -21,7 +21,7 @@ export function log(...str) {
 }
 
 /** 转换http与https */
-export function transformHTTP(href) {
+export function transformProtocol(href) {
   if (href.startsWith('http://')) return href.replace('http://', 'https://')
   if (href.startsWith('https://')) return href.replace('https://', 'http://')
   return href
