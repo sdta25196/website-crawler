@@ -1,5 +1,6 @@
 import Crawler from "crawler"
 import { handleHref, log, transformEnds, transformProtocol, writeFile } from "./tools.js"
+import checkStatus from "./checkStatus.js"
 
 /**
 *
@@ -102,5 +103,6 @@ function run({ startHost, recordLowDomain = true, crawlerLowDomain = false }) {
 // })
 
 run({
-  startHost: 'http://www.acac.cn/',
+  startHost: 'https://www.wtu.edu.cn/',
+  crawlerLowDomain: true
 })
