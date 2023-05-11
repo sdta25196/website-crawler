@@ -58,7 +58,7 @@ function test(x) {
     // if (!x) {
     //   test(1)
     // }
-  });
+  })
   crawler.queue(data)
 }
 

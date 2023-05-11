@@ -1,21 +1,27 @@
 import Crawler from "crawler"
 import { handleHref, log, transformEnds, transformProtocol, writeFile } from "./tools.js"
 import checkStatus from "./checkStatus.js"
-
+import { sucessFileName, errorFileName, lowSuccessFileName, lowErrorFileName } from './type.js'
 /**
 *
 * @author : 田源
 * @date : 2023-05-05 14:36
 * @description : 爬虫主函数
-* @param startHost 爬虫开始的域名
-* @param recordLowDomain 是否记录低级域名，默认 true, 不建议关闭
-* @param crawlerLowDomain 是否爬取低级域名，默认 false
+* @param startHost `String` 爬虫开始的域名
+* @param recordLowDomain `Boolean` 是否记录低级域名，默认 true, 不建议关闭
+* @param crawlerLowDomain `Boolean` 是否爬取低级域名，默认 false
+* @param disableCrawler `Array` 禁止爬取的链接数组
+* @param saveDataFolderName `String` 自定义保存数据的文件夹，建议填一个，默认 `/data`
 */
-function run({ startHost, recordLowDomain = true, crawlerLowDomain = false }) {
+function run({ startHost, recordLowDomain = true, crawlerLowDomain = false, disableCrawler = [], saveDataFolderName }) {
+  // 黑名单的链接不抓
+  if (disableCrawler.includes(startHost)) return
+
   const crawledHrefsQueue = new Set() // 爬过的链接
   const waitHrefsQueue = new Set() // 等待爬取的链接
   const lowDomain = new Set()  // 低级域名
-  const { host: mainHost, hostname: folderName } = new URL(startHost) // mainHost：当前链接域名, folderName：文件夹名称
+  const { host: mainHost, hostname } = new URL(startHost) // mainHost：当前链接域名
+  const folderName = saveDataFolderName + '/' + hostname // 数据保存文件夹，没填的话就默认以当前hostname为准
   let tempHref = startHost
 
   const crawler = new Crawler({
@@ -33,11 +39,11 @@ function run({ startHost, recordLowDomain = true, crawlerLowDomain = false }) {
         // ! 出错直接下一个
         log(folderName, "\t错误：：：当前等待队列中拥有:", waitHrefsQueue.size)
         nextQueue()
-        writeFile(folderName, 'err.txt', (res.request?.uri?.href || (tempHref + '::状态::' + res.statusCode)) + '\n')
+        writeFile(folderName, errorFileName, (res.request?.uri?.href || (tempHref + '::状态::' + res.statusCode)) + '\n')
       } else {
         const $ = res.$
         if ($) {
-          writeFile(folderName, 'hrefs.txt', (res.request?.uri?.href) + '\n')
+          writeFile(folderName, sucessFileName, (res.request?.uri?.href) + '\n')
           const currentOrigin = res.request.uri.protocol + '//' + res.request.uri.host // 当前域名
           const currentHref = res.request.uri.href // 当前url完整地址
           // 抓取完成后，把上一次存的临时url,添加到已经抓取的set里，
@@ -80,16 +86,16 @@ function run({ startHost, recordLowDomain = true, crawlerLowDomain = false }) {
     const { successDomain, errorDomain } = await checkStatus([...lowDomain])
     // 输出一下低级域名
     if (recordLowDomain) {
-      writeFile(folderName, 'lowSuccessDomain.txt', [...successDomain].join('\n'))
-      writeFile(folderName, 'lowErrorDomain.txt', [...errorDomain].join('\n'))
+      writeFile(folderName, lowSuccessFileName, [...successDomain].join('\n'))
+      writeFile(folderName, lowErrorFileName, [...errorDomain].join('\n'))
     }
     // 自动抓取成功的低级域名
     if (crawlerLowDomain) {
       successDomain.forEach(item => {
-        run({ startHost: item })
+        run({ startHost: item, disableCrawler, saveDataFolderName })
       })
     }
-  });
+  })
   crawler.queue(startHost)
 }
 
@@ -104,5 +110,6 @@ function run({ startHost, recordLowDomain = true, crawlerLowDomain = false }) {
 
 run({
   startHost: 'https://www.wtu.edu.cn/',
-  crawlerLowDomain: true
+  crawlerLowDomain: true,
+  saveDataFolderName: 'aaa'
 })

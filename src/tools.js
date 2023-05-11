@@ -1,18 +1,15 @@
 import fs from "fs"
 import path from "path"
-import { fileURLToPath } from 'url'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+import { saveDataPath } from './type.js'
 
 
-/** 检测文件，并写入data文件夹下 */
+/** 检测文件，并写入保存数据的文件夹 */
 export function writeFile(folderName, fileName, content) {
-  const folderPath = path.join(__dirname, '../data/' + folderName)
-  if (!fs.existsSync(folderPath)) {
-    fs.mkdirSync(folderPath, { recursive: true })
+  const folderPathName = path.join(saveDataPath, folderName)
+  if (!fs.existsSync(folderPathName)) {
+    fs.mkdirSync(folderPathName, { recursive: true })
   }
-  fs.appendFile(path.join(folderPath, fileName), content, () => { })
+  fs.appendFile(path.join(folderPathName, fileName), content, () => { })
 }
 
 

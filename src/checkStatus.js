@@ -29,7 +29,7 @@ async function checkStatus(data) {
         successDomain: sucessResult,
         errorDomain: errResult
       })
-    });
+    })
     crawler.queue(data)
   })
 }
