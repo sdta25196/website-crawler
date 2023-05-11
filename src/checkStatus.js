@@ -6,8 +6,6 @@ import Crawler from "crawler"
 * @date : 2023-05-10 16:16
 * @description : 检查链接是否可用
 * @param data Array, 需要检查的数据
-* @param scuess Function, 成功回调函数
-* @param error Function, 失败回调函数
 */
 async function checkStatus(data) {
   return new Promise(res => {

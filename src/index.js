@@ -20,7 +20,8 @@ function run({ startHost, recordLowDomain = true, crawlerLowDomain = false, disa
   const crawledHrefsQueue = new Set() // 爬过的链接
   const waitHrefsQueue = new Set() // 等待爬取的链接
   const lowDomain = new Set()  // 低级域名
-  const { host: mainHost, hostname } = new URL(startHost) // mainHost：当前链接域名
+  const { host, hostname } = new URL(startHost)
+  const mainHost = host.split('.').slice(-3).join('.') // 当前域名的主域
   const folderName = saveDataFolderName + '/' + hostname // 数据保存文件夹，没填的话就默认以当前hostname为准
   let tempHref = startHost
 
