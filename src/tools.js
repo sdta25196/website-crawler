@@ -42,7 +42,11 @@ export function handleHref(href, currentHref, mainHost) {
   if (href.startsWith('javascript')) return ''
 
   // ! 文件链接不要 
-  if (href.endsWith('.zip') || href.endsWith('.pdf') || href.endsWith('.doc') || href.endsWith('.rar') || href.endsWith('.png') || href.endsWith('.jpg')) return ''
+  if (
+    href.endsWith('.zip') || href.endsWith('.rar') || href.endsWith('.pdf') || href.endsWith('.doc') || href.endsWith('.docx') ||
+    href.endsWith('.png') || href.endsWith('.jpg') || href.endsWith('.avi') || href.endsWith('.xls') || href.endsWith('.xlsx') ||
+    href.endsWith('.gif') || href.endsWith('.txt') || href.endsWith('.csv')
+  ) return ''
 
   // ! 锚点不要
   if (href.indexOf('#') !== -1) return ''
