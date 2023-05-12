@@ -22,7 +22,7 @@ function run({ startHost, recordLowDomain = true, crawlerLowDomain = false, disa
   const lowDomain = new Set()  // 低级域名
   const { host, hostname } = new URL(startHost)
   const mainHost = host.split('.').slice(-3).join('.') // 当前域名的主域
-  const folderName = saveDataFolderName + '/' + hostname // 数据保存文件夹，没填的话就默认以当前hostname为准
+  const folderName = (saveDataFolderName || '.') + '/' + hostname // 数据保存文件夹，没填的话就默认以当前hostname为准
   let tempHref = startHost
 
   const crawler = new Crawler({

@@ -56,7 +56,7 @@ export function handleHref(href, currentHref, mainHost) {
   }
 
   // ! 非本站主域名链接不要
-  if (href.indexOf(mainHost.replace('www', '')) === -1) return ''
+  if (href.indexOf(mainHost) === -1) return ''
 
   // ! 验证href是否合法
   if (!href.match(/https?:\/\//)) return ''
