@@ -110,7 +110,7 @@ function run({ startHost, recordLowDomain = true, crawlerLowDomain = false, disa
 // })
 
 run({
-  startHost: 'https://www.wtu.edu.cn/',
+  startHost: 'https://www.nju.edu.cn/',
   crawlerLowDomain: true,
-  saveDataFolderName: 'aaa'
+  saveDataFolderName: 'nju.edu.cn'
 })
