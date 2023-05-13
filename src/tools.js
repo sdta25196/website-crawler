@@ -59,7 +59,11 @@ export function handleHref(href, currentHref, mainHost) {
   if (href.indexOf(mainHost) === -1) return ''
 
   // ! 验证href是否合法
-  if (!href.match(/https?:\/\//)) return ''
+  try {
+    new URL(href)
+  } catch (e) {
+    return ''
+  }
 
   return href
 }
