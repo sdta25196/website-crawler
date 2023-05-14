@@ -56,7 +56,7 @@ function run({ startHost, recordLowDomain = true, crawlerLowDomain = false, disa
             const finalyHref = handleHref(href, currentHref, mainHost)
             if (finalyHref) {
               // ! 二级域名要单独存起来
-              let curl = new URL(currentOrigin)
+              let curl = new URL(currentOrigin) // TODO 这里有问题啊。如果页面301到了一个新的地址，这里就变成新的地址了，于是就重复l
               let furl = new URL(finalyHref)
               if (recordLowDomain && curl.host !== furl.host) {
                 if (!lowDomain.has(furl.origin) && !lowDomain.has(transformProtocol(furl.origin))) {
@@ -93,7 +93,10 @@ function run({ startHost, recordLowDomain = true, crawlerLowDomain = false, disa
     // 自动抓取成功的低级域名
     if (crawlerLowDomain) {
       successDomain.forEach(item => {
-        run({ startHost: item, disableCrawler, saveDataFolderName })
+        if (item.includes('https://xxgk.nju.edu.cn')) {
+          console.log(item)
+          run({ startHost: item, disableCrawler, saveDataFolderName })
+        }
       })
     }
   })
@@ -112,5 +115,5 @@ function run({ startHost, recordLowDomain = true, crawlerLowDomain = false, disa
 run({
   startHost: 'https://www.nju.edu.cn/',
   crawlerLowDomain: true,
-  saveDataFolderName: 'nju.edu.cn'
+  saveDataFolderName: '222'
 })
