@@ -47,6 +47,7 @@ function run({ startHost, recordLowDomain = true, crawlerLowDomain = false, disa
       } else {
         const $ = res.$
         if ($ && res.request?.uri?.href?.includes(host)) {
+          // TODO 301问题，这里是否应该使用tempHref写入文件，目前写入res.request?.uri?.href，会存在文件内重复的情况
           writeFile(folderName, sucessFileName, (res.request?.uri?.href) + '\n')
           const currentHref = res.request.uri.href // 当前url完整地址
           // 抓取完成后，把上一次存的临时url,添加到已经抓取的set里，
