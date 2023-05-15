@@ -46,7 +46,7 @@ function run({ startHost, recordLowDomain = true, crawlerLowDomain = false, disa
         writeFile(folderName, errorFileName, (res.request?.uri?.href || (tempHref + '::状态::' + res.statusCode)) + '\n')
       } else {
         const $ = res.$
-        if ($) {
+        if ($ && res.request?.uri?.href?.includes(host)) {
           writeFile(folderName, sucessFileName, (res.request?.uri?.href) + '\n')
           const currentHref = res.request.uri.href // 当前url完整地址
           // 抓取完成后，把上一次存的临时url,添加到已经抓取的set里，
@@ -113,5 +113,5 @@ function run({ startHost, recordLowDomain = true, crawlerLowDomain = false, disa
 run({
   startHost: 'https://www.nju.edu.cn/',
   crawlerLowDomain: true,
-  saveDataFolderName: '222'
+  saveDataFolderName: 'nju.edu.cn'
 })
