@@ -93,10 +93,7 @@ function run({ startHost, recordLowDomain = true, crawlerLowDomain = false, disa
     // 自动抓取成功的低级域名
     if (crawlerLowDomain) {
       successDomain.forEach(item => {
-        if (item.includes('https://xxgk.nju.edu.cn')) {
-          console.log(item)
-          run({ startHost: item, disableCrawler, saveDataFolderName })
-        }
+        run({ startHost: item, disableCrawler, saveDataFolderName })
       })
     }
   })
