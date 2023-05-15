@@ -32,10 +32,13 @@ function run({ startHost, recordLowDomain = true, crawlerLowDomain = false, disa
       function nextQueue() {
         const [nextHrefs] = waitHrefsQueue // 取出集合里下一个需要爬的href
         waitHrefsQueue.delete(nextHrefs) // 删除
-        crawler.queue(nextHrefs)
-        tempHref = nextHrefs // 临时记录请求地址。
-        log("下一个抓：", nextHrefs)
+        if (nextHrefs) {
+          crawler.queue(nextHrefs)
+          tempHref = nextHrefs // 临时记录请求地址。
+          log("下一个抓：", nextHrefs)
+        }
       }
+
       if (error || res.statusCode > 400) {
         // ! 出错直接下一个
         log(folderName, "\t错误：：：当前等待队列中拥有:", waitHrefsQueue.size)
@@ -45,7 +48,6 @@ function run({ startHost, recordLowDomain = true, crawlerLowDomain = false, disa
         const $ = res.$
         if ($) {
           writeFile(folderName, sucessFileName, (res.request?.uri?.href) + '\n')
-          const currentOrigin = res.request.uri.protocol + '//' + res.request.uri.host // 当前域名
           const currentHref = res.request.uri.href // 当前url完整地址
           // 抓取完成后，把上一次存的临时url,添加到已经抓取的set里，
           // 这里如果使用currentHref的话，会造成等待队列和完成队列不一直的问题，出现301死循环
@@ -56,9 +58,8 @@ function run({ startHost, recordLowDomain = true, crawlerLowDomain = false, disa
             const finalyHref = handleHref(href, currentHref, mainHost)
             if (finalyHref) {
               // ! 二级域名要单独存起来
-              let curl = new URL(currentOrigin) // TODO 这里有问题啊。如果页面301到了一个新的地址，这里就变成新的地址了，于是就重复l
               let furl = new URL(finalyHref)
-              if (recordLowDomain && curl.host !== furl.host) {
+              if (recordLowDomain && host !== furl.host) {
                 if (!lowDomain.has(furl.origin) && !lowDomain.has(transformProtocol(furl.origin))) {
                   lowDomain.add(furl.origin)
                 }
