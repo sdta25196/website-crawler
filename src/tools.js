@@ -32,7 +32,8 @@ export function transformEnds(href) {
 
 /** 判断是否是JS渲染 */
 export function isJsRender($) {
-  if ($('script[type="text/html"]')[0]) return true
+  // 使用 script[type="text/html"] ，并且内容有 {{ xxx }} , 就证明此页面使用的模板
+  if ($('script[type="text/html"]').text().match(/{{.[^}]+}}/)) return true
   return false
 }
 
