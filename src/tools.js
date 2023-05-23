@@ -30,6 +30,12 @@ export function transformEnds(href) {
   return href + '/'
 }
 
+/** 判断是否是JS渲染 */
+export function isJsRender($) {
+  console.log($('script'))
+  return true
+}
+
 export function handleHref(href, currentHref, mainHost) {
 
   // ! 非法链接不要

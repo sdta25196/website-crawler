@@ -1,5 +1,5 @@
 import Crawler from "crawler"
-import { handleHref, log, transformEnds, transformProtocol, writeFile } from "./tools.js"
+import { handleHref, isJsRender, log, transformEnds, transformProtocol, writeFile } from "./tools.js"
 import checkStatus from "./checkStatus.js"
 import { sucessFileName, errorFileName, lowSuccessFileName, lowErrorFileName } from './type.js'
 /**
@@ -47,8 +47,11 @@ function run({ startHost, recordLowDomain = true, crawlerLowDomain = false, disa
       } else {
         const $ = res.$
         if ($ && res.request?.uri?.href?.includes(host)) {
-          // TODO 301问题，这里是否应该使用tempHref写入文件，目前写入res.request?.uri?.href，会存在文件内重复的情况
-          writeFile(folderName, sucessFileName, (res.request?.uri?.href) + '\n')
+
+          const jsRender = isJsRender($)
+          // ! 301问题，这里使用tempHref写入文件，如果写入(res.request?.uri?.href)，会存在文件内重复的情况
+          writeFile(folderName, sucessFileName, tempHref + (jsRender ? '\t疑似JS渲染\t' : '') + '\n')
+
           const currentHref = res.request.uri.href // 当前url完整地址
           // 抓取完成后，把上一次存的临时url,添加到已经抓取的set里，
           // 这里如果使用currentHref的话，会造成等待队列和完成队列不一直的问题，出现301死循环

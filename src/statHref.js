@@ -2,6 +2,14 @@ import fs from 'fs'
 import { join } from 'path'
 import { saveDataPath, sucessFileName } from './type.js'
 
+/**
+*
+* @author : 田源
+* @date : 2023-05-23 11:39
+* @description : 统计文件中的正确链接有多少
+*
+*/
+
 /** 查找文件夹下所有的文件 */
 function findFiles(path, filesArray) {
   let dirOrFile = fs.readdirSync(path)
@@ -41,4 +49,4 @@ function run() {
   return { articleLine, allLine }
 }
 
-console.log(run())
+console.log(run()) // 输出统计结果
