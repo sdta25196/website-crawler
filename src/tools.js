@@ -32,8 +32,8 @@ export function transformEnds(href) {
 
 /** 判断是否是JS渲染 */
 export function isJsRender($) {
-  console.log($('script'))
-  return true
+  if ($('script[type="text/html"]')[0]) return true
+  return false
 }
 
 export function handleHref(href, currentHref, mainHost) {
