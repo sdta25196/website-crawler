@@ -49,7 +49,7 @@ export function handleHref(href, currentHref, mainHost) {
   if (
     href.endsWith('.zip') || href.endsWith('.rar') || href.endsWith('.pdf') || href.endsWith('.doc') || href.endsWith('.docx') ||
     href.endsWith('.png') || href.endsWith('.jpg') || href.endsWith('.avi') || href.endsWith('.xls') || href.endsWith('.xlsx') ||
-    href.endsWith('.gif') || href.endsWith('.txt') || href.endsWith('.csv')
+    href.endsWith('.gif') || href.endsWith('.txt') || href.endsWith('.csv') || href.endsWith('.mp4')
   ) return ''
 
   // ! 锚点不要
