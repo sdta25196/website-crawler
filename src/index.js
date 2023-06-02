@@ -42,8 +42,8 @@ function run({ startHost, recordLowDomain = true, crawlerLowDomain = false, disa
       if (error || res.statusCode > 400) {
         // ! 出错直接下一个
         log(folderName, "\t错误：：：当前等待队列中拥有:", waitHrefsQueue.size)
-        nextQueue()
         writeFile(folderName, errorFileName, (res.request?.uri?.href || (tempHref + '::状态::' + res.statusCode)) + '\n')
+        nextQueue()
       } else {
         const $ = res.$
         if ($ && res.request?.uri?.href?.includes(host)) {
