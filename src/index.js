@@ -88,18 +88,20 @@ function run({ startHost, recordLowDomain = true, crawlerLowDomain = false, disa
   })
 
   crawler.on('drain', async () => {
-    // ! 检查所有低级域名的可访问性
-    const { successDomain, errorDomain } = await checkStatus([...lowDomain])
-    // 输出一下低级域名
-    if (recordLowDomain) {
-      writeFile(folderName, lowSuccessFileName, [...successDomain].join('\n'))
-      writeFile(folderName, lowErrorFileName, [...errorDomain].join('\n'))
-    }
-    // 自动抓取成功的低级域名
-    if (crawlerLowDomain) {
-      successDomain.forEach(item => {
-        run({ startHost: item, disableCrawler, saveDataFolderName })
-      })
+    if (lowDomain.size !== 0) {
+      // ! 检查所有低级域名的可访问性
+      const { successDomain, errorDomain } = await checkStatus([...lowDomain])
+      // 输出一下低级域名
+      if (recordLowDomain) {
+        writeFile(folderName, lowSuccessFileName, [...successDomain].join('\n'))
+        writeFile(folderName, lowErrorFileName, [...errorDomain].join('\n'))
+      }
+      // 自动抓取成功的低级域名
+      if (crawlerLowDomain) {
+        successDomain.forEach(item => {
+          run({ startHost: item, disableCrawler, saveDataFolderName })
+        })
+      }
     }
   })
   crawler.queue(startHost)
