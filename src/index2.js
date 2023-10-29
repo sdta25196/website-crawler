@@ -4,6 +4,8 @@ import checkStatus from "./checkStatus.js"
 import { sucessFileName, errorFileName, lowSuccessFileName, lowErrorFileName } from './type.js'
 import TProxy from './proxy.js'
 
+// ! 第二个主文件
+
 /**
 *
 * @author : 田源
@@ -96,7 +98,6 @@ async function run({ startHost, recordLowDomain = true, crawlerLowDomain = false
                   }
                 } else {
                   // ! 已经爬过的href里没有才加入等待集合。http 和 https 算一个, 结尾带反斜杠和不带的算一个
-                  // TODO域名判断需要修改成全等,只判断一级的。或者一二级均判断。
                   if (furl.pathname.startsWith(savePathname) || furl.pathname.startsWith(pathname) && // ! 只抓当前pathname下的文章
                     crawledHrefsQueue.size + waitHrefsQueue.size < 1900000 && // 最多两百万
                     !crawledHrefsQueue.has(finalyHref) &&

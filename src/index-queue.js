@@ -4,6 +4,8 @@ import checkStatus from "./checkStatus.js"
 import { sucessFileName, errorFileName, lowSuccessFileName, lowErrorFileName } from './type.js'
 import TProxy from './proxy.js'
 
+// ! 队列版
+
 /**
 *
 * @author : 田源
@@ -15,7 +17,7 @@ import TProxy from './proxy.js'
 * @param disableCrawler `Array` 禁止爬取的链接数组
 * @param saveDataFolderName `String` 自定义保存数据的文件夹，建议填一个，默认 `/data`
 */
-async function run({ startHost, recordLowDomain = true, crawlerLowDomain = false, disableCrawler = [], saveDataFolderName, savePathname }) {
+async function run({ startHost, recordLowDomain = true, crawlerLowDomain = false, disableCrawler = [], saveDataFolderName, savePathname, callback }) {
   const tProxy = new TProxy()
   return new Promise(async function (resolve) {
     // 黑名单的链接不抓
@@ -136,6 +138,7 @@ async function run({ startHost, recordLowDomain = true, crawlerLowDomain = false
       //   }
       // }
       if (waitHrefsQueue.size === 0) {
+        if (callback) { await callback() }
         resolve()
       }
     })
@@ -151,28 +154,70 @@ async function run({ startHost, recordLowDomain = true, crawlerLowDomain = false
   })
 }
 
-// run({
-//   startHost: 'https://www.baidu.com/zuowen/gaixie/6728352.html', // ! 域名 + 目录。仅抓取此目录下文章
-//   saveDataFolderName: 'baidu/zuowen',  // ! 设置文件放置位置
-//   savePathname: '/zuowen/'
-// })
-
 let a = ['https://www.baidu.com/abc']
 
-for (let i = 0; i < a.length; i += 2) {
-  // await run({
-  //   startHost: a[i], // ! 域名 + 目录。仅抓取此目录下文章
-  //   saveDataFolderName: 'baidu/' + a[i].replace('https://www.baidu.com/', '') // ! 设置文件放置位置
-  // })
-  await Promise.all([
-    run({
-      startHost: a[i], // ! 域名 + 目录。仅抓取此目录下文章
-      saveDataFolderName: 'baidu/' + a[i].replace('https://www.baidu.com/', '') // ! 设置文件放置位置
-    }),
-    run({
-      startHost: a[i + 1], // ! 域名 + 目录。仅抓取此目录下文章
-      saveDataFolderName: 'baidu/' + a[i + 1].replace('https://www.baidu.com/', '') // ! 设置文件放置位置
-    })
-  ])
-  console.log('完成：：：', i, "::", a[i + 1])
+class Queue {
+  constructor() {
+    this.items = [];
+  }
+
+  enqueue(item) {
+    this.items.push(item);
+  }
+
+  dequeue() {
+    return this.items.shift();
+  }
+
+  isEmpty() {
+    return this.items.length === 0;
+  }
+
+  size() {
+    return this.items.length;
+  }
 }
+
+// 创建一个长度为100的队列
+const queue = new Queue();
+for (let i = 1; i <= a.length; i++) {
+  queue.enqueue(a[i]);
+}
+console.log(queue.size())
+
+// 并发执行前十个任务
+async function processQueue() {
+  const tasks = [];
+
+  // 取出前十个任务
+  for (let i = 0; i < 2; i++) {
+    const task = queue.dequeue();
+    tasks.push(run({
+      startHost: task, // ! 域名 + 目录。仅抓取此目录下文章
+      saveDataFolderName: 'baidu/' + task.replace('https://www.baidu.com/', ''), // ! 设置文件放置位置
+      callback: nextTask
+    }));
+  }
+  const nextTask = async () => {
+    while (!queue.isEmpty()) {
+      const task = queue.dequeue();
+      await run({
+        startHost: task, // ! 域名 + 目录。仅抓取此目录下文章
+        saveDataFolderName: 'baidu/' + task.replace('https://www.baidu.com/', ''), // ! 设置文件放置位置
+        callback: nextTask
+      });
+    }
+  }
+
+  // 并发执行前十个任务
+  await Promise.all(tasks);
+}
+
+// 启动程序
+processQueue()
+  .then(() => {
+    console.log("所有任务已完成");
+  })
+  .catch((error) => {
+    console.error("程序出错:", error);
+  });

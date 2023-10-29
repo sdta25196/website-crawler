@@ -2,14 +2,25 @@ import fs from "fs"
 import path from "path"
 import { saveDataPath } from './type.js'
 
+/** html实体转字符串 */
+export const entryToStr = (str) => {
+  return str.replace(/&#(?:x([0-9a-z]{1,4})|([0-9]{1,4}));/gi, function (_, hex, numStr) {
+    var num = parseInt(hex || numStr, hex ? 16 : 10);
+    return String.fromCharCode(num);
+  });
+}
 
 /** 检测文件，并写入保存数据的文件夹 */
-export function writeFile(folderName, fileName, content) {
+export function writeFile(folderName, fileName, content, type) {
   const folderPathName = path.join(saveDataPath, folderName)
   if (!fs.existsSync(folderPathName)) {
     fs.mkdirSync(folderPathName, { recursive: true })
   }
-  fs.appendFile(path.join(folderPathName, fileName), content, () => { })
+  if (type === 'w') {
+    fs.writeFile(path.join(folderPathName, fileName), content, () => { })
+  } else {
+    fs.appendFile(path.join(folderPathName, fileName), content, () => { })
+  }
 }
 
 
