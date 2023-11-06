@@ -16,3 +16,17 @@ export const creditsailingCustom = ($, currentHref, folderName) => {
     }
   }
 }
+
+/** 范文网 文章处理逻辑 */
+export const fanwenCustom = ($, currentHref, folderName) => {
+  // ! 处理文章逻辑
+  if (/(\d+(_\d+)?)\.html?/.test(currentHref)) {
+    const content = $('.content')?.html()
+    const title = $('.title')?.text()
+    if (content && title) {
+      let id = currentHref.match(/(\d+(_\d+)?)\.html?/)?.[1] || title
+      let obj = { title, content: entryToStr(content), url: currentHref }
+      writeFile(folderName, `${id}.json`, JSON.stringify(obj), 'w')
+    }
+  }
+}
