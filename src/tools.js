@@ -2,6 +2,12 @@ import fs from "fs"
 import path from "path"
 import { saveDataPath } from './type.js'
 
+/** 读文件 */
+export const readJs = async (jsPath) => {
+  let { default: list } = await import(jsPath);
+  return new Set(list)
+}
+
 /** html实体转字符串 */
 export const entryToStr = (str) => {
   return str.replace(/&#(?:x([0-9a-z]{1,4})|([0-9]{1,4}));/gi, function (_, hex, numStr) {

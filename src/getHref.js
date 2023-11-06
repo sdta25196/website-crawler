@@ -6,7 +6,7 @@ let hrefs = ['https://www.baidu.com']
 *
 * @author : 田源
 * @date : 2023-10-14 09:11
-* @description :  检查某网站的全部目录
+* @description :  获取队列中符合要求的链接
 *
 */
 

@@ -1,12 +1,14 @@
 {
-  "name": "100.crawler",
+  "name": "crawler",
   "version": "1.0.0",
   "description": "整站爬虫",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node --max-old-space-size=8192 ./src/index.js",
-    "start1": "node --max-old-space-size=8192 ./src/index2.js"
+    "start": "node --max-old-space-size=10240 ./task/run.js",
+    "start1": "node --max-old-space-size=8192 ./task/run-list.js",
+    "start:q": "node --max-old-space-size=8192 ./task/run-queue.js",
+    "stat": "grep -ro '}' --include='*.log' ./data | wc -l"
   },
   "keywords": [],
   "author": "",
