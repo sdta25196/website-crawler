@@ -11,7 +11,7 @@ import TProxy from './proxy.js'
 * @description : 爬虫主函数
 * @param origin `String` 域名前缀
 * @param startHref `String` 爬虫开始的域名
-* @param recordLowDomain `Boolean` 是否记录低级域名，默认 true, 不建议关闭
+* @param recordLowDomain `Boolean` 是否记录低级域名，默认 false, 不建议关闭
 * @param blockPathname `Array` 禁止爬取的链接数组 示例：`['/a', '/b']`
 * @param saveDataFolderName `String` 自定义保存数据的文件夹，建议填一个，默认 `/data`
 * @param callback `Function` 使用队列模式时的回调函数
