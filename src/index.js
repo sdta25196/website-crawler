@@ -36,8 +36,17 @@ export async function run({
       // 在每个请求处理完毕后将调用此回调函数
       callback: async function (error, res, done) {
         async function nextQueue() {
-          const [nextHrefs] = waitHrefsQueue // 取出集合里下一个需要爬的href
-          waitHrefsQueue.delete(nextHrefs) // 删除
+          let nextHrefs
+          // 循环取出集合里下一个需要爬的href
+          while (true) {
+            const [href] = waitHrefsQueue
+            waitHrefsQueue.delete(href) // 删除
+            if (!href || !blockPathname.find(item => href.startsWith(item))) {
+              nextHrefs = href
+              break
+            }
+          }
+
           if (nextHrefs) {
             tempHref = origin + nextHrefs // 临时记录请求地址。
             if (useProxy) {
