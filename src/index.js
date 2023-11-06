@@ -1,5 +1,5 @@
 import Crawler from "crawler"
-import { entryToStr, handleHref, log, transformEnds, transformProtocol, writeFile } from "./tools.js"
+import { handleHref, log, transformEnds, transformProtocol, writeFile } from "./tools.js"
 import { errorFileName, lowErrorFileName, lowSuccessFileName } from './type.js'
 import checkStatus from "./checkStatus.js"
 import TProxy from './proxy.js'
@@ -15,11 +15,13 @@ import TProxy from './proxy.js'
 * @param blockPathname `Array` 禁止爬取的链接数组 示例：`['/a', '/b']`
 * @param saveDataFolderName `String` 自定义保存数据的文件夹，建议填一个，默认 `/data`
 * @param callback `Function` 使用队列模式时的回调函数
+* @param customFun `Function` 自定义处理函数，($, currentHref, folderName)=>{}
+* @param onlyPage `Boolean` 是否只抓取当前页面，默认false, 可阻止全站爬取以及断点续传时继续加入队列。
 */
 export async function run({
   origin, startHref, recordLowDomain = false, blockPathname = [],
-  saveDataFolderName, savePathname, useProxy = false,
-  breakCrawledHrefsQueue, breakWaitHrefsQueue, callback
+  saveDataFolderName, savePathname, useProxy = false, onlyPage = false,
+  breakCrawledHrefsQueue, breakWaitHrefsQueue, callback, customFun
 }) {
   const tProxy = new TProxy()
   return new Promise(async function (resolve) {
@@ -82,19 +84,8 @@ export async function run({
 
             const currentHref = res.request.uri.href // 当前url完整地址
             // ! 处理文章逻辑
-            if (/\/\d+\.html?$/.test(currentHref)) {
-              const content = $('.article')?.text()
-              const title = $('h1')?.text()
-              if (content && title) {
-                const publish_time = $('.sound')?.text()?.match(/\d.+\d/)?.[0]
-                let obj = { type: "3", title, content: entryToStr(content), source: currentHref, publish_time }
-                let date = new Date();
-                let month = date.getMonth() + 1; // 月份从 0 开始，因此需要加 1
-                let day = date.getDate();
-                let hour = date.getHours();
-                writeFile(folderName, `${month}-${day}-${hour}.log`, JSON.stringify(obj) + '\n')
-              }
-            }
+            customFun && customFun($, currentHref, folderName)
+
             // 抓取完成后，把上一次存的临时url,添加到已经抓取的set里，
             // 这里如果使用currentHref的话，会造成等待队列和完成队列不一直的问题，出现301死循环
             crawledHrefsQueue.add(new URL(tempHref).pathname)
@@ -110,11 +101,14 @@ export async function run({
                     lowDomain.add(furl.origin)
                   }
                 } else {
-                  // ! 已经爬过的href里没有才加入等待集合。http 和 https 算一个, 结尾带反斜杠和不带的算一个
-                  if ((savePathname ? furl.pathname.startsWith(savePathname) : true) && // ! 只抓当前pathname下的文章
-                    // crawledHrefsQueue.size + waitHrefsQueue.size < 1900000 && // ! 暂时不确定优化后最多有多少
+                  if (
+                    !onlyPage &&  // ! onlyPage为false时，才开启全站抓取
+                    (savePathname ? furl.pathname.startsWith(savePathname) : true) && // ! 只抓当前pathname下的文章
+                    // crawledHrefsQueue.size + waitHrefsQueue.size < 1900000 &&    // ! 暂时不确定优化后最多有多少
                     !blockPathname.find(item => furl.pathname.startsWith(item)) && // ! 被阻拦的目录不需要抓取
+                    // ! 已经爬过的href里没有才加入等待集合
                     !crawledHrefsQueue.has(furl.pathname) &&
+                    // ! http 和 https 算一个, 结尾带反斜杠和不带的算一个
                     !crawledHrefsQueue.has(transformProtocol(furl.pathname)) &&
                     !crawledHrefsQueue.has(transformProtocol(transformEnds(furl.pathname))) &&
                     !crawledHrefsQueue.has(transformEnds(transformProtocol(furl.pathname))) &&

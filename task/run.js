@@ -1,3 +1,4 @@
+import { creditsailingCustom } from "../src/customFuns.js"
 import { run } from "../src/index.js"
 import { readJs } from "../src/tools.js"
 
@@ -13,6 +14,7 @@ await run({
   origin: origin,
   startHref: href,
   saveDataFolderName: 'creditsailing', // ! 保存文件的目录
+  customFun: creditsailingCustom,
   // savePathname: pathname // ! 指定的抓取目录, 不传就不分目录
   // blockPathname: ['/article'], // ! article 抓完了
   // breakCrawledHrefsQueue,

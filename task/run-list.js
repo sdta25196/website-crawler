@@ -1,3 +1,4 @@
+import { creditsailingCustom } from "../src/customFuns.js"
 import { run } from "../src/index.js"
 
 /** 循环排队抓目录 */
@@ -15,6 +16,7 @@ for (let i = 0; i < hrefs.length; i++) {
     startHref: href,
     saveDataFolderName: pathname, // ! 保存文件的目录
     savePathname: pathname, // ! 指定的抓取目录
+    customFun: creditsailingCustom,
     // breakCrawledHrefsQueue,
     // breakWaitHrefsQueue,
     useProxy: true
