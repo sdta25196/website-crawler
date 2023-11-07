@@ -54,7 +54,7 @@ export function isJsRender($) {
   return false
 }
 
-export function handleHref(href, currentHref, mainHost) {
+export function handleHref(href, currentHref) {
 
   // ! 非法链接不要
   if (!href) return ''
@@ -76,11 +76,8 @@ export function handleHref(href, currentHref, mainHost) {
   if (href.indexOf('mailto:') !== -1 || href.indexOf('tel:') !== -1 || href.indexOf('sms:') !== -1 || href.indexOf('geopoint:') !== -1) return ''
 
   if (!href.startsWith('http')) {
-    href = absolutify(currentHref, href)
+    href = absolutify(href, currentHref)
   }
-
-  // ! 非本站主域名链接不要
-  if (href.indexOf(mainHost) === -1) return ''
 
   // ! 验证href是否合法
   try {
@@ -89,11 +86,28 @@ export function handleHref(href, currentHref, mainHost) {
     return ''
   }
 
+  // ! 上级域名不一致不要， 例如：a.b.baidu.com 只统计 b.baidu.com 的其他子域名
+  if (!checkTopLevelDomains(href, currentHref)) return ''
+
   return href
 }
 
+function checkTopLevelDomains(linkA, linkB) {
+  let domainA = getTopLevelDomain(linkA);
+  let domainB = getTopLevelDomain(linkB);
+
+  return domainA === domainB;
+}
+
+function getTopLevelDomain(link) {
+  let url = new URL(link);
+  let domain = url.hostname.split('.')
+  domain.shift()
+  return domain.join('.')
+}
+
 // 相对路径修改
-function absolutify(fullUrl = '', relativeUrl = '') {
+function absolutify(relativeUrl = '', fullUrl = '') {
   try {
     const result = new URL(relativeUrl, fullUrl)
     return result.toString()

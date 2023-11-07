@@ -54,13 +54,12 @@ async function processQueue() {
   const nextTask = async () => {
     while (!queue.isEmpty()) {
       const task = queue.dequeue()
-      const { origin, href, pathname } = new URL(task)
+      const { href, pathname } = new URL(task)
 
       await run({
-        origin: origin,
         startHref: href,
         saveDataFolderName: FolderName,
-        savePathname: pathname, // ! 指定的抓取目录, 不传就不分目录
+        limitPathname: pathname, // ! 指定的抓取目录, 不传就不分目录
         customFun: creditsailingCustom,
         useProxy: false,
         callback: nextTask
@@ -72,12 +71,11 @@ async function processQueue() {
   // 取出前N个任务
   for (let i = 0; i < 2; i++) {
     const task = queue.dequeue()
-    const { origin, href, pathname } = new URL(task)
+    const { href, pathname } = new URL(task)
     tasks.push(run({
-      origin: origin,
       startHref: href,
       saveDataFolderName: FolderName,
-      savePathname: pathname, // ! 指定的抓取目录, 不传就不分目录
+      limitPathname: pathname, // ! 指定的抓取目录, 不传就不分目录
       customFun: creditsailingCustom,
       useProxy: false,
       callback: nextTask
