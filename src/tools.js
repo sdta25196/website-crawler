@@ -4,8 +4,12 @@ import { saveDataPath } from './type.js'
 
 /** 读文件 */
 export const readJs = async (jsPath) => {
-  let { default: list } = await import(jsPath);
-  return new Set(list)
+  try {
+    let { default: list } = await import(jsPath);
+    return new Set(list)
+  } catch (e) {
+    return undefined
+  }
 }
 
 /** html实体转字符串 */
